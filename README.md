@@ -1,6 +1,8 @@
 # Password Manager by CyberDagger
-CyberDagger´s Password Manager. Made with python.
+
 ![fondo_empresa](https://user-images.githubusercontent.com/42787753/98998408-b5c65f80-24fb-11eb-929e-a2938d961331.png)
+
+CyberDagger´s Password Manager. Made with python.
 
 # About this project
 ## Mission
