@@ -1,4 +1,4 @@
-# Password Manager by CyberDagger
+# Password Manager by CyberDagger JacobGT
 
 ![fondo_empresa](https://user-images.githubusercontent.com/42787753/98998408-b5c65f80-24fb-11eb-929e-a2938d961331.png)
 
@@ -14,8 +14,7 @@ CyberDagger´s Password Manager. Made with python.
 * Make it with GUI / TKinter
 
 ### Programmers
-* CyberDagger (Jacob Flores y Rodrigo Leon)
+* CyberDagger (Jacob Flores)
 * Lead Developer: Jacob Flores
-* Co-Developer: Rodrigo Leon
-
+* Co-Developer: 
 
