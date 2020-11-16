@@ -1,6 +1,9 @@
-import newUser
-import firstRun
-import existingUser
+import newUserMain
+import firstRunMain
+import existingUserMain
+import pswrdKprMain
+import firstRunPswrdKpr
+import sqlite3
 
 exit = False
 while exit != True:
@@ -8,20 +11,30 @@ while exit != True:
     print("Options: \n"
           "1. Existing User\n"
           "2. New User\n"
-          "3. First Run (IMPORTANT for first time runs)\n"
           "0. Exit\n"
           "---------------------------------------------------------------------------")
     startMenu = int(input("Enter option: "))
     if startMenu == 1:
-        if existingUser.serchUser() == True:
-            pass
+        username = str(input("Enter username: "))
+        password = str(input("Enter password: "))
+        #try:
+        if existingUserMain.searchUser(username, password) == True:
+            print("User has been found")
+            pswrdKprMain.mainPasswordKeeper(username)
         else:
             print("User has not been found. Please try again, or create an account.")
+        #except:
+        #    print("Error, database has not been created. Please run new user and try again.")
     elif startMenu == 2:
-        newUser.signup()
-    elif startMenu == 3:
-        firstRun.tableCreate()
-        print("\nDatabase has been created succesfully, you can now create a new account! :)\n")
+        try:
+            firstRunMain.tableCreate()
+        except sqlite3.OperationalError as error:
+            print("")
+        username = str(input("Enter username: "))
+        password = str(input("Enter password: "))
+        newUserMain.signup(username, password)
+        pswrdKprMain.mainPasswordKeeper(username)
+        firstRunPswrdKpr.createTable(username)
     else:
         exit = True
         print("           ,aodObo," +
