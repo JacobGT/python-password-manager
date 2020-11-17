@@ -1,12 +1,14 @@
-import newUserMain
-import firstRunMain
-import existingUserMain
-import pswrdKprMain
-import firstRunPswrdKpr
-import sqlite3
+# Import all necessary packages
+import sqlite3  # Import sqlite for database
+import main_def_func  # Define all the functions used here
+import password_keeper  # Goes to another section where all the passwords are kept (encrypted)
+import password_keeper_def_func  # Defines all functions for the password_keeper
+import cryptographyDefFunc  # Defines all the functions for encrypting, decrypting getting and setting the keys, etc.
 
+# We do a while menu so the program only ends when the user specifies to do so
 exit = False
 while exit != True:
+    # Create a menu
     print("\nWelcome to the password manager with encryption and database v1.")
     print("Options: \n"
           "1. Existing User\n"
@@ -17,26 +19,32 @@ while exit != True:
     if startMenu == 1:
         username = str(input("Enter username: "))
         password = str(input("Enter password: "))
-        #try:
-        if existingUserMain.searchUser(username, password) == True:
-            print("User has been found")
-            pswrdKprMain.mainPasswordKeeper(username)
-        else:
-            print("User has not been found. Please try again, or create an account.")
-        #except:
-        #    print("Error, database has not been created. Please run new user and try again.")
+        key = cryptographyDefFunc.get_key(username)  # Gets the key for the specified user
+        try:
+            # Because the username and password where encrypted when inserting into table we need to compare them
+            if main_def_func.searchUser(key, username, password) == True:
+                print("User has been found")
+                password_keeper.mainPasswordKeeper(username)  # We give all the necessary parameters
+            else:
+                print("User has not been found. Please try again, or create an account.")
+        except:
+            print("Error, database has not been created. Please run new user and try again.")
     elif startMenu == 2:
         try:
-            firstRunMain.tableCreate()
+            main_def_func.tableCreate()  # Searches to see if database has all ready been created
         except sqlite3.OperationalError as error:
             print("")
-        username = str(input("Enter username: "))
-        password = str(input("Enter password: "))
-        newUserMain.signup(username, password)
-        pswrdKprMain.mainPasswordKeeper(username)
-        firstRunPswrdKpr.createTable(username)
+        username = str(input("Enter username: "))  # asks username
+        password = str(input("Enter password: "))  # asks password
+        cryptographyDefFunc.set_key(username)  # sets key for encryption for specified user
+        encrypted_user = cryptographyDefFunc.encrypt_some(username, password)  # encrypts user and password
+        encrypted_username = encrypted_user[0]
+        encrypted_password = encrypted_user[1]
+        main_def_func.signup(encrypted_username, encrypted_password)  # creates record in first table with encrypted data
+        password_keeper.mainPasswordKeeper(username)  # We give all the necessary parameters
+        password_keeper_def_func.createTable(username)  # Creates second table for that specified user
     else:
-        exit = True
+        exit = True  # Exits the program
         print("           ,aodObo," +
          "\n        ,AMMMMP~~~~" +
          "\n     ,MMMMMMMMA." +
