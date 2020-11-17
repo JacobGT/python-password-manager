@@ -1,8 +1,4 @@
-# Password Manager by CyberDagger JacobGT
-
-![fondo_empresa](https://user-images.githubusercontent.com/42787753/98998408-b5c65f80-24fb-11eb-929e-a2938d961331.png)
-
-CyberDagger´s Password Manager. Made with python.
+# Password Manager
 
 # About this project
 
@@ -17,4 +13,6 @@ CyberDagger´s Password Manager. Made with python.
 * CyberDagger (Jacob Flores)
 * Lead Developer: Jacob Flores
 * Co-Developer: 
+![fondo_empresa](https://user-images.githubusercontent.com/42787753/98998408-b5c65f80-24fb-11eb-929e-a2938d961331.png)
 
+CyberDagger´s Password Manager. Made with python.
