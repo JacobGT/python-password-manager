@@ -4,74 +4,88 @@ import main_def_func  # Define all the functions used here
 import password_keeper  # Goes to another section where all the passwords are kept (encrypted)
 import password_keeper_def_func  # Defines all functions for the password_keeper
 import cryptographyDefFunc  # Defines all the functions for encrypting, decrypting getting and setting the keys, etc.
+from tkinter import *  # Used for the graphical user interface (gui)
+from tkinter import messagebox
+import os
 
-# We do a while menu so the program only ends when the user specifies to do so
-exit = False
-while exit != True:
-    # Create a menu
-    print("\nWelcome to the password manager with encryption and database v1.")
-    print("Options: \n"
-          "1. Existing User\n"
-          "2. New User\n"
-          "0. Exit\n"
-          "---------------------------------------------------------------------------")
-    startMenu = int(input("Enter option: "))
-    if startMenu == 1:
-        username = str(input("Enter username: "))
-        password = str(input("Enter password: "))
-        key = cryptographyDefFunc.get_key(username)  # Gets the key for the specified user
+# Create main root window and configuring it
+root = Tk()
+root.title("Login / Signup")
+root.iconbitmap("ExtraSupportContent/florestechnologylogo.ico")
+width = 500
+height = 300
+root.geometry(str(width) + "x" + str(height))
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+x_coordinate = int((screen_width/2) - (width/2))
+y_coordinate = int((screen_height/2) - (height/2))
+root.geometry(str(width) + "x" + str(height) + "+" + str(x_coordinate) + "+" + str(y_coordinate))
+
+# Create Labels and Adjust them in main window
+welcome_label = Label(root, text="Welcome!", font=("Times New Roman", 30))
+welcome_label.grid(row=1, column=3, columnspan=100, padx=10, pady=10)
+username_label = Label(root, text="Username:", font=("Times New Roman", 15))
+username_label.grid(row=5, column=3, padx=3, pady=10)
+password_label = Label(root, text="Password:", font=("Times New Roman", 15))
+password_label.grid(row=7, column=3, padx=3, pady=10)
+
+# Create Entry and Adjust them in main window
+username_entry = Entry(root, width=50)
+username_entry.grid(row=5, column=5, columnspan=2)
+password_entry = Entry(root, width=50)
+password_entry.grid(row=7, column=5, columnspan=2)
+
+# Commands for buttons
+def login():
+    if (username_entry.get() == "" or password_entry.get() == ""):
+        messagebox.showwarning("Warning", "The username or password fields are blank!")
+    else:
+        username = username_entry.get()  # gets username
+        password = password_entry.get()  # gets password
         try:
+            key = cryptographyDefFunc.get_key(username)  # Gets the key for the specified user
             # Because the username and password where encrypted when inserting into table we need to compare them
             if main_def_func.searchUser(key, username, password) == True:
-                print("User has been found")
+                root.destroy()
                 password_keeper.mainPasswordKeeper(username)  # We give all the necessary parameters
             else:
-                print("User has not been found. Please try again, or create an account.")
-        except:
-            print("Error, database has not been created. Please run new user and try again.")
-    elif startMenu == 2:
+                messagebox.showerror("Error", "User has not been found. Please try again, or create an account.")
+        except Exception as error:
+            messagebox.showerror("Error", error)
+
+def signup():
+    if (username_entry.get() == "" or password_entry.get() == ""):
+        messagebox.showwarning("Warning", "The username or password fields are blank!")
+    else:
         try:
             main_def_func.tableCreate()  # Searches to see if database has all ready been created
         except sqlite3.OperationalError as error:
-            print("")
-        username = str(input("Enter username: "))  # asks username
-        password = str(input("Enter password: "))  # asks password
-        cryptographyDefFunc.set_key(username)  # sets key for encryption for specified user
-        encrypted_user = cryptographyDefFunc.encrypt_some(username, password)  # encrypts user and password
-        encrypted_username = encrypted_user[0]
-        encrypted_password = encrypted_user[1]
-        main_def_func.signup(encrypted_username, encrypted_password)  # creates record in first table with encrypted data
-        password_keeper.mainPasswordKeeper(username)  # We give all the necessary parameters
-        password_keeper_def_func.createTable(username)  # Creates second table for that specified user
-    else:
-        exit = True  # Exits the program
-        print("           ,aodObo," +
-         "\n        ,AMMMMP~~~~" +
-         "\n     ,MMMMMMMMA." +
-         "\n  ,M;'     `YV'\n" +
-         "  AM' ,OMA,\n" +
-         " AM|   `~VMM,.      .,ama,____,amma,..\n" +
-         " MML      )MMMD   .AMMMMMMMMMMMMMMMMMMD.\n" +
-         " VMMM    .AMMY'  ,AMMMMMMMMMMMMMMMMMMMMD\n" +
-         " `VMM, AMMMV'  ,AMMMMMMMMMMMMMMMMMMMMMMM,                ,\n" +
-         "  VMMMmMMV'  ,AMY~~''  'MMMMMMMMMMMM' '~~             ,aMM\n" +
-         "  `YMMMM'   AMM'        `VMMMMMMMMP'_              A,aMMMM\n" +
-         "   AMMM'    VMMA. YVmmmMMMMMMMMMMML MmmmY          MMMMMMM\n" +
-         "  ,AMMA   _,HMMMMmdMMMMMMMMMMMMMMMML`VMV'         ,MMMMMMM\n" +
-         "  AMMMA _'MMMMMMMMMMMMMMMMMMMMMMMMMMA `'          MMMMMMMM\n" +
-         " ,AMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMa      ,,,   `MMMMMMM\n" +
-         " AMMMMMMMMM'~`YMMMMMMMMMMMMMMMMMMMMMMA    ,AMMV    MMMMMMM\n" +
-         " VMV MMMMMV   `YMMMMMMMMMMMMMMMMMMMMMY   `VMMY'  adMMMMMMM\n" +
-         " `V  MMMM'      `YMMMMMMMV.~~~~~~~~~,aado,`V''   MMMMMMMMM\n" +
-         "    aMMMMmv       `YMMMMMMMm,    ,/AMMMMMA,      YMMMMMMMM\n" +
-         "    VMMMMM,,v       YMMMMMMMMMo oMMMMMMMMM'    a, YMMMMMMM\n" +
-         "    `YMMMMMY'       `YMMMMMMMY' `YMMMMMMMY     MMmMMMMMMMM\n" +
-         "     AMMMMM  ,        ~~~~~,aooooa,~~~~~~      MMMMMMMMMMM\n" +
-         "       YMMMb,d'         dMMMMMMMMMMMMMD,   a,, AMMMMMMMMMM\n" +
-         "        YMMMMM, A       YMMMMMMMMMMMMMY   ,MMMMMMMMMMMMMMM\n" +
-         "       AMMMMMMMMM        `~~~~'  `~~~~'   AMMMMMMMMMMMMMMM\n" +
-         "       `VMMMMMM'  ,A,                  ,,AMMMMMMMMMMMMMMMM\n" +
-         "     ,AMMMMMMMMMMMMMMA,       ,aAMMMMMMMMMMMMMMMMMMMMMMMMM\n" +
-         "   ,AMMMMMMMMMMMMMMMMMMA,    AMMMMMMMMMMMMMMMMMMMMMMMMMMMM\n" +
-         " ,AMMMMMMMMMMMMMMMMMMMMMA   AMMMMMMMMMMMMMMMMMMMMMMMMMMMMM\n" +
-         "AMMMMMMMMMMMMMMMMMMMMMMMMAaAMMMMMMMMM            -JacobGT")
+            messagebox.showwarning("Error", error)
+        username = username_entry.get()  # gets username
+        password = password_entry.get()  # gets password
+        try:
+            cryptographyDefFunc.set_key(username)  # sets key for encryption for specified user
+            encrypted_user = cryptographyDefFunc.encrypt_some(username, password)  # encrypts user and password
+            encrypted_username = encrypted_user[0]
+            encrypted_password = encrypted_user[1]
+            main_def_func.signup(encrypted_username,
+                                 encrypted_password)  # creates record in first table with encrypted data
+            password_keeper_def_func.createTable(username)  # Creates second table for that specified user
+            root.destroy()
+            password_keeper.mainPasswordKeeper(username)  # We give all the necessary parameters
+        except Exception as error:
+            messagebox.showwarning("Error", error)
+
+def info():
+    os.system('notepad ExtraSupportContent/about.txt')
+
+# Create Buttons and Adjust them in main window
+login_button = Button(root, text="Log In", font=("Times New Roman", 13), command=login)
+login_button.grid(row=20, column=4, pady=15)
+signup_button = Button(root, text="Sign Up", font=("Times New Roman", 13), command=signup)
+signup_button.grid(row=20, column=6, pady=15)
+info_button = Button(root, text="Info", font=("Times New Roman", 13), command=info)
+info_button.grid(row=1000, column=5, padx=15, pady=15)
+
+root.mainloop()
+
